@@ -107,4 +107,3 @@ classDiagram
     Simulator --> Model : owns
     Simulator --> SignalGenerator : uses
 
-
