@@ -16,7 +16,7 @@
 #endif
 
 double readDouble(const std::string& prompt) {
-    double x;
+    double x = 0.0;
     while (true) {
         std::cout << prompt;
         if (std::cin >> x) {
@@ -30,7 +30,7 @@ double readDouble(const std::string& prompt) {
 }
 
 int readInt(const std::string& prompt) {
-    int x;
+    int x = 0;
     while (true) {
         std::cout << prompt;
         if (std::cin >> x) {
@@ -46,12 +46,18 @@ int readInt(const std::string& prompt) {
 SignalType readSignalType() {
     while (true) {
         std::cout << "Тип сигнала: 1 - step, 2 - impulse, 3 - harmonic: ";
-        int c;
+        int c = 0;
         if (std::cin >> c) {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (c == 1) return SignalType::STEP;
-            if (c == 2) return SignalType::IMPULSE;
-            if (c == 3) return SignalType::HARMONIC;
+            if (c == 1) {
+                return SignalType::STEP;
+            }
+            if (c == 2) {
+                return SignalType::IMPULSE;
+            }
+            if (c == 3) {
+                return SignalType::HARMONIC;
+            }
         }
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -61,9 +67,12 @@ SignalType readSignalType() {
 
 std::string signalName(SignalType t) {
     switch (t) {
-        case SignalType::STEP:     return "step";
-        case SignalType::IMPULSE:  return "impulse";
-        case SignalType::HARMONIC: return "harmonic";
+        case SignalType::STEP:
+            return "step";
+        case SignalType::IMPULSE:
+            return "impulse";
+        case SignalType::HARMONIC:
+            return "harmonic";
     }
     return "unknown";
 }
@@ -76,9 +85,11 @@ std::string findPlotScript() {
     };
     for (const char* c : candidates) {
         std::ifstream f(c);
-        if (f.good()) return c;
+        if (f.good()) {
+            return std::string(c);
+        }
     }
-    return "plot_single.py";
+    return std::string("plot_single.py");
 }
 
 void runAndPlot(std::unique_ptr<Model> model, int n,
@@ -151,10 +162,14 @@ std::set<int> readModelChoice() {
     while (std::getline(ss, token, ',')) {
         try {
             int v = std::stoi(token);
-            if (v >= 0 && v <= 3) chosen.insert(v);
-        } catch (...) { /* пропускаем мусор */ }
+            if (v >= 0 && v <= 3) {
+                chosen.insert(v);
+            }
+        } catch (...) {
+            // Игнорируем мусорные токены
+        }
     }
-    if (chosen.empty() || chosen.count(0)) {
+    if (chosen.empty() || chosen.count(0) > 0) {
         chosen = {1, 2, 3};
     }
     return chosen;
@@ -166,12 +181,20 @@ int main() {
     SetConsoleCP(CP_UTF8);
 #endif
 
-    std::cout << "Лабораторная работа №1, вариант 12\n\n";
+    std::cout << "Лабораторная работа №1, вариант 12\n";
+    std::cout << "Студент: as06712\n";
+    std::cout << "Модели: 1.2, 2.6, 3.10\n\n";
     auto chosen = readModelChoice();
 
-    if (chosen.count(1)) runModel12();
-    if (chosen.count(2)) runModel26();
-    if (chosen.count(3)) runModel310();
+    if (chosen.count(1) > 0) {
+        runModel12();
+    }
+    if (chosen.count(2) > 0) {
+        runModel26();
+    }
+    if (chosen.count(3) > 0) {
+        runModel310();
+    }
 
     std::cout << "\nГотово\n";
     return 0;
