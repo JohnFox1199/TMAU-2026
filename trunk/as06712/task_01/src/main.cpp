@@ -11,6 +11,8 @@
 #include <sstream>
 #include <fstream>
 #include <stdexcept>
+#include <array>
+#include <stdexcept>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -47,8 +49,7 @@ int readInt(const std::string& prompt) {
 SignalType readSignalType() {
     while (true) {
         std::cout << "Тип сигнала: 1 - step, 2 - impulse, 3 - harmonic: ";
-        int c = 0;
-        if (std::cin >> c) {
+        if (int c = 0; std::cin >> c) {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             if (c == 1) {
                 return SignalType::STEP;
@@ -79,15 +80,15 @@ std::string signalName(SignalType t) {
 }
 
 std::string findPlotScript() {
-    const char* candidates[] = {
+    const std::array<std::string, 3> candidates = {
         "plot_single.py",
         "..\\plot_single.py",
         "../plot_single.py"
     };
-    for (const char* c : candidates) {
+    for (const std::string& c : candidates) {
         std::ifstream f(c);
         if (f.good()) {
-            return std::string(c);
+            return c;
         }
     }
     return std::string("plot_single.py");
@@ -166,10 +167,12 @@ std::set<int> readModelChoice() {
             if (v >= 0 && v <= 3) {
                 chosen.insert(v);
             }
-        } catch (const std::invalid_argument&) {
-            // Токен не является числом — игнорируем
-        } catch (const std::out_of_range&) {
-            // Число вне диапазона int — игнорируем
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "  Пропущен нечисловой токен '" << token
+                      << "': " << e.what() << "\n";
+        } catch (const std::out_of_range& e) {
+            std::cerr << "  Число вне диапазона '" << token
+                      << "': " << e.what() << "\n";
         }
     }
     if (chosen.empty() || chosen.count(0) > 0) {
