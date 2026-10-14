@@ -106,4 +106,3 @@ classDiagram
     Model <|-- ODE310
     Simulator --> Model : owns
     Simulator --> SignalGenerator : uses
-
