@@ -10,6 +10,7 @@
 #include <set>
 #include <sstream>
 #include <fstream>
+#include <stdexcept>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -161,12 +162,14 @@ std::set<int> readModelChoice() {
     std::set<int> chosen;
     while (std::getline(ss, token, ',')) {
         try {
-            int v = std::stoi(token);
+            const int v = std::stoi(token);
             if (v >= 0 && v <= 3) {
                 chosen.insert(v);
             }
-        } catch (...) {
-            // Игнорируем мусорные токены
+        } catch (const std::invalid_argument&) {
+            // Токен не является числом — игнорируем
+        } catch (const std::out_of_range&) {
+            // Число вне диапазона int — игнорируем
         }
     }
     if (chosen.empty() || chosen.count(0) > 0) {
