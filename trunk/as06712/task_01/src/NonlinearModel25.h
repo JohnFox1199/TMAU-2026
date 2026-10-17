@@ -14,7 +14,13 @@ public:
     }
 
     double step(double u) override {
-        const double sign_u = (u > 0.0) - (u < 0.0);
+        double sign_u = 0.0;
+        if (u > 0.0) {
+            sign_u = 1.0;
+        } else if (u < 0.0) {
+            sign_u = -1.0;
+        }
+        
         const double term = b_ * sign_u * (1.0 - std::exp(-std::abs(u)));
         y_ = a_ * y_ + term;
         return y_;
