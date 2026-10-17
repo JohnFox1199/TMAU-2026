@@ -1,9 +1,10 @@
 #pragma once
 #include "Model.h"
+#include <cmath>
 
-class ODE310 final : public Model {
+class ODE37 final : public Model {
 public:
-    ODE310(double a, double b, double dt)
+    ODE37(double a, double b, double dt)
         : a_(a), b_(b), dt_(dt) {
         reset();
     }
@@ -13,13 +14,14 @@ public:
     }
 
     double step(double u) override {
-        const double dy = -a_ * y_ + b_ + u;
+        // dy/dt = -e^a * y + b * u
+        const double dy = -std::exp(a_) * y_ + b_ * u;
         y_ = y_ + dt_ * dy;
         return y_;
     }
 
     const char* name() const override {
-        return "Model_3_10";
+        return "Model_3_7";
     }
 
 private:
