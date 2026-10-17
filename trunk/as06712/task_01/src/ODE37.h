@@ -14,7 +14,6 @@ public:
     }
 
     double step(double u) override {
-        // dy/dt = -e^a * y + b * u
         const double dy = -std::exp(a_) * y_ + b_ * u;
         y_ = y_ + dt_ * dy;
         return y_;
