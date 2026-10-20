@@ -1,18 +1,19 @@
 #pragma once
+#include "ISignalGenerator.h"
 #include <cmath>
 
 enum class SignalType {
-    STEP,      // u = const
-    IMPULSE,   // u0 = 1, u_{tau>0} = 0
-    HARMONIC   // u = sin(tau)
+    STEP,
+    IMPULSE,
+    HARMONIC
 };
 
-class SignalGenerator {
+class SignalGenerator final : public ISignalGenerator {
 public:
-    SignalGenerator(SignalType type, double amplitude = 1.0)
+    explicit SignalGenerator(SignalType type, double amplitude = 1.0)
         : type_(type), amplitude_(amplitude) {}
 
-    double get(double tau) const {
+    double get(double tau) const override {
         switch (type_) {
             case SignalType::STEP:
                 return amplitude_;
